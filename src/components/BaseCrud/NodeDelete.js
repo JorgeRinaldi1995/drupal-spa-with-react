@@ -1,5 +1,5 @@
 import React from "react";
-import { fetchWithCSRFToken } from "../utils/fetch";
+import { fetchWithCSRFToken } from "../../utils/fetch";
 
 const NodeDelete = ({ id, title, onSuccess }) => {
   function doConfirm() {

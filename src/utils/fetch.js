@@ -11,9 +11,9 @@
  *   Options to pass to fetch for the call to fetchUrl.
  */
 export const fetchWithCSRFToken = (csrfUrl, fetchUrl, fetchOptions) => {
-  var basePath = drupalSettings.path.baseUrl;
-  var origin = window.location.origin;
-  var fullUrl = origin + basePath;
+  const basePath = drupalSettings.path.baseUrl;
+  const origin = window.location.origin;
+  const fullUrl = origin + basePath;
 
   if (!fetchOptions.headers.get('X-CSRF-Token')) {
     return fetch(`${fullUrl}${csrfUrl}`)

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { fetchWithCSRFToken } from "../utils/fetch";
+import { fetchWithCSRFToken } from "../../utils/fetch";
 
 const NodeForm = ({id, title, body, onSuccess}) => {
   const [isSubmitting, setSubmitting] = useState(false);
