@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-const IngredientSelect = ({ onIngredientChange }) => {
+const IngredientSelect = ({ onIngredientAdd }) => {
     const [ingredients, setIngredients] = useState([]);
+    const [selectedIngredientId, setSelectedIngredientId] = useState('');
 
     useEffect(() => {
         fetch('http://react-in-drupal.lndo.site/jsonapi/taxonomy_term/ingredients')
@@ -23,34 +24,30 @@ const IngredientSelect = ({ onIngredientChange }) => {
     }, []);
 
     const handleChange = (event) => {
-        const selectedinternal_tid = parseInt(event.target.value, 10); // Convert to number
-        console.log('Selected internal_tid:', selectedinternal_tid); // Debug log
-        if (selectedinternal_tid) {
-            const selectedIngredient = ingredients.find(ingredient => {
-                console.log('Ingredient internal_tid:', ingredient.internal_tid);
-                return ingredient.internal_tid === selectedinternal_tid; // Use regular equality operator
-            });
-            
-            console.log('Selected Ingredient:', selectedIngredient); // Debug log
+        setSelectedIngredientId(parseInt(event.target.value, 10));
+    }
+
+    const handleAddIngredient = () => {
+        if (selectedIngredientId) {
+            const selectedIngredient = ingredients.find(ingredient => ingredient.internal_tid === selectedIngredientId);
             if (selectedIngredient) {
-                onIngredientChange(selectedIngredient);
-            } else {
-                console.log('Ingredient not found'); // Debug log
+                onIngredientAdd(selectedIngredient);
             }
-        } else {
-            console.log('No internal_tid selected'); // Debug log
         }
     };
 
     return (
-        <select onChange={handleChange}>
-            <option value="">Select an ingredient</option>
-            {ingredients.map(ingredient => (
-                <option key={ingredient.internal_tid} value={ingredient.internal_tid}>
-                    {ingredient.name}
-                </option>
-            ))}
-        </select>
+        <>
+            <select onChange={handleChange} value={selectedIngredientId}>
+                <option value="">Select an ingredient</option>
+                {ingredients.map(ingredient => (
+                    <option key={ingredient.internal_tid} value={ingredient.internal_tid}>
+                        {ingredient.name}
+                    </option>
+                ))}
+            </select>
+            <button type="button" onClick={handleAddIngredient}>Add Ingredient</button>
+        </>
     );
 };
 

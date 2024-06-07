@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { fetchWithCSRFToken } from "../../utils/fetch";
 import IngredientSelect from "./IngredientsSelect";
+import SelectedIngredientDisplay from "./SelectedIngredientDisplay";
 
 const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     const [isSubmitting, setSubmitting] = useState(false);
@@ -23,7 +24,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
         setValues({ ...values, [name]: value });
     };
 
-    const handleIngredientChange = (ingredient) => {
+    const handleIngredientAdd = (ingredient) => {
         if (ingredient) {
             setValues(prevValues => {
                 const isDuplicate = prevValues.selectedIngredients.some(i => i.id === ingredient.id);
@@ -164,7 +165,9 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                     onChange={handleInputChange}
                 />
                 <br />
-                <IngredientSelect onIngredientChange={handleIngredientChange} />
+                <IngredientSelect onIngredientAdd={handleIngredientAdd} />
+                <br />
+                <SelectedIngredientDisplay ingredients={values.selectedIngredients} />
                 <input
                     name="submit"
                     type="submit"
