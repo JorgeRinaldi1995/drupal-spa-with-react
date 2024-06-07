@@ -5,7 +5,7 @@ const IngredientSelect = ({ onIngredientAdd }) => {
     const [selectedIngredientId, setSelectedIngredientId] = useState('');
 
     useEffect(() => {
-        fetch('http://react-in-drupal.lndo.site/jsonapi/taxonomy_term/ingredients')
+        fetch('https://react-in-drupal.lndo.site/jsonapi/taxonomy_term/ingredients')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch ingredients');
@@ -24,7 +24,7 @@ const IngredientSelect = ({ onIngredientAdd }) => {
     }, []);
 
     const handleChange = (event) => {
-        setSelectedIngredientId(parseInt(event.target.value, 10));
+        setSelectedIngredientId(Number(event.target.value));
     }
 
     const handleAddIngredient = () => {
@@ -37,7 +37,7 @@ const IngredientSelect = ({ onIngredientAdd }) => {
     };
 
     return (
-        <>
+        <div>
             <select onChange={handleChange} value={selectedIngredientId}>
                 <option value="">Select an ingredient</option>
                 {ingredients.map(ingredient => (
@@ -47,7 +47,7 @@ const IngredientSelect = ({ onIngredientAdd }) => {
                 ))}
             </select>
             <button type="button" onClick={handleAddIngredient}>Add Ingredient</button>
-        </>
+        </div>
     );
 };
 

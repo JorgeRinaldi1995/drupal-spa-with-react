@@ -6,7 +6,7 @@ const SelectedIngredientDisplay = ({ ingredients }) => {
             <h3>Selected Ingredients:</h3>
             <ul>
                 {ingredients.map(ingredient => (
-                    <li key={ingredient.id}>{ingredient.name}</li>
+                    <li key={ingredient.internal_tid}>{ingredient.name}</li>
                 ))}
             </ul>
         </div>
