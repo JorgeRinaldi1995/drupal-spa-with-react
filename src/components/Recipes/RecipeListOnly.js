@@ -1,58 +1,65 @@
 import React, { useEffect, useState } from "react";
-import RecipeForm from "./RecipeForm";
+import RecipeItem from "./RecipeItem";
 
 function isValidData(data) {
-  if (data === null) {
-    return false;
-  }
-  if (data.data === undefined ||
-    data.data === null ||
-    data.data.length === 0 ) {
-    return false;
-  }
-  return true;
+  return data !== null && data.data !== undefined && data.data !== null && data.data.length !== 0;
 }
-
-const RecipeItem = ({drupal_internal__nid, title}) => (
-  <div>
-    <a href={`/node/${drupal_internal__nid}`}>{title}</a>
-  </div>
-);
 
 const NoData = () => (
   <div>No recipes found.</div>
 );
 
 const RecipeListOnly = () => {
-  const [content, setContent] = useState(false);
+  const [recipes, setRecipes] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [filter, setFilter] = useState(null);
 
   useEffect(() => {
-    // This should point to your local Drupal instance. Alternatively, for React
-    // applications embedded in a Drupal theme or module this could also be set
-    // to a relative path.
-    const API_ROOT = '/jsonapi/';
-    const url = `${API_ROOT}node/recipe?fields[node--recipe]=id,drupal_internal__nid,title,body,field_ingredients&sort=-created&page[limit]=10`;
+    const fetchRecipes = async () => {
+      const API_ROOT = '/jsonapi/';
+      const url = `${API_ROOT}views/recipes/page_1`;
+      
+      const headers = new Headers({ Accept: 'application/vnd.api+json' });
 
-    const headers = new Headers({
-      Accept: 'application/vnd.api+json',
-    });
-
-    fetch(url, {headers})
-      .then((response) => response.json())
-      .then((data) => {
+      try {
+        const response = await fetch(url, { headers });
+        const data = await response.json();
         if (isValidData(data)) {
-          setContent(data.data)
+          setRecipes(data.data);
         }
-      })
-      .catch(err => console.log('There was an error accessing the API', err));
+      } catch (error) {
+        console.log('There was an error accessing the API', error);
+      }
+    };
+
+    fetchRecipes();
   }, []);
-  console.log(content)
+
+  useEffect(() => {
+    const fetchIngredients = async () => {
+      const API_ROOT = '/jsonapi/';
+      const url = `${API_ROOT}taxonomy_term/ingredients`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        const formattedIngredients = data.data.map(item => ({
+          id: item.id,
+          name: item.attributes.name
+        }));
+        setIngredients(formattedIngredients);
+      } catch (error) {
+        console.error('Error fetching ingredients:', error);
+      }
+    };
+
+    fetchIngredients();
+  }, []);
+
   return (
     <div>
-      <h2>Site content</h2>
-      <RecipeForm />
-      {content ? (
+      <h2>Site Recipes</h2>
+      {recipes ? (
         <>
           <label htmlFor="filter">Type to filter:</label>
           <input
@@ -61,17 +68,25 @@ const RecipeListOnly = () => {
             placeholder="Start typing ..."
             onChange={(event => setFilter(event.target.value.toLowerCase()))}
           />
-          <hr/>
-          {
-            content.filter((item) => {
+          <hr />
+          {recipes
+            .filter((item) => {
               if (!filter) {
                 return item;
               }
-
-              if (filter && (item.attributes.title.toLowerCase().includes(filter) || item.attributes.field_ingredients.toLowerCase().includes(filter) || item.attributes.body.value.toLowerCase().includes(filter))) {
+              if (filter && item.attributes.title.toLowerCase().includes(filter)) {
                 return item;
               }
-            }).map((item) => <RecipeItem key={item.id} {...item.attributes}/>)
+            })
+            .map((item) => (
+              <RecipeItem
+                key={item.id}
+                nodeId={item.attributes.drupal_internal__nid}
+                title={item.attributes.title}
+                ingredientsIds={item.relationships.field_ingredients.data.map(ingredient => ingredient.id)}
+                allIngredients={ingredients}
+              />
+            ))
           }
         </>
       ) : (

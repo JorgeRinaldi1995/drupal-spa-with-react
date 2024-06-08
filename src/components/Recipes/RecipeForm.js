@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { fetchWithCSRFToken } from "../../utils/fetch";
 import IngredientSelect from "./IngredientsSelect";
 import SelectedIngredientDisplay from "./SelectedIngredientDisplay";
+import './style.scss'
 
 const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     const [isSubmitting, setSubmitting] = useState(false);
@@ -69,7 +70,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                 }
             }
         };
-        console.log(recipe)
+        /* console.log(recipe) */
         if (id) {
             recipe.data.id = id;
         }
@@ -147,7 +148,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                     {result.message}
                 </div>
             )}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="form">
                 <input
                     name="title"
                     type="text"
@@ -171,7 +172,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                 <input
                     name="submit"
                     type="submit"
-                    value={id ? 'Edit existing node' : 'Add new node'}
+                    value={id ? 'Edit existing node' : 'Create recipe'}
                 />
             </form>
         </div>
