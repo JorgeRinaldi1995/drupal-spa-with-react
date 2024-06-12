@@ -12,6 +12,7 @@ const NoData = () => (
 const RecipeListOnly = () => {
   const [recipes, setRecipes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
+  const [images, setImages] = useState([]);
   const [filter, setFilter] = useState(null);
 
   useEffect(() => {
@@ -33,6 +34,28 @@ const RecipeListOnly = () => {
     };
 
     fetchRecipes();
+  }, []);
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const API_ROOT = '/jsonapi/';
+      const url = `${API_ROOT}/node/recipe?include=field_image`;
+      
+      const headers = new Headers({ Accept: 'application/vnd.api+json' });
+
+      try {
+        const response = await fetch(url, { headers });
+        const data = await response.json();
+        console.log(data.included)
+        if (isValidData(data)) {
+          setImages(data);
+        }
+      } catch (error) {
+        console.log('There was an error accessing the API', error);
+      }
+    };
+
+    fetchImages();
   }, []);
 
   useEffect(() => {

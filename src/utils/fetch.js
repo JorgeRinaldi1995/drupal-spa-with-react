@@ -14,7 +14,7 @@ export const fetchWithCSRFToken = (csrfUrl, fetchUrl, fetchOptions) => {
   const basePath = drupalSettings.path.baseUrl;
   const origin = window.location.origin;
   const fullUrl = origin + basePath;
-
+  console.log('base path:', basePath, ',', 'origin:', origin, 'full url:', fullUrl)
   if (!fetchOptions.headers.get('X-CSRF-Token')) {
     return fetch(`${fullUrl}${csrfUrl}`)
       .then(response => response.text())
