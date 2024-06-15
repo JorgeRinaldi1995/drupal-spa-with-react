@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { fetchWithCSRFToken } from "../../utils/fetch";
-import IngredientSelect from "./IngredientsSelect";
-import SelectedIngredientDisplay from "./SelectedIngredientDisplay";
-import ImageUploader from "./ImageUploader";
-import './style.scss'
+import { fetchWithCSRFToken } from "../../../utils/fetch";
+import IngredientSelect from "../IngredientsSelect/IngredientsSelect";
+import SelectedIngredientDisplay from "../SelectedIngredientDisplay/SelectedIngredientDisplay";
+import ImageUploader from "../ImageUploader/ImageUploader";
+import './style.scss';
+
 
 const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     const [isSubmitting, setSubmitting] = useState(false);
@@ -20,7 +21,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     };
 
     const [image, setImage] = useState(null); // State for the image file
-    const [base64Image, setBase64Image] = useState(null); // State for the base64 image
+    const [buffer, setBuffer] = useState(null); // State for the base64 image
 
     const [values, setValues] = useState(initialRecipeValues);
 
@@ -43,62 +44,11 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
             });
         }
     };
-    /* const [image, setImage] = useState(null); */
 
-/*     const handleImageUpload = async (event) => {
-        const selectedImage = event.target.files[0];
-        console.log('image que eu subi', selectedImage);
-        setImage(selectedImage);
-
-        const reader = new FileReader();
-        reader.readAsDataURL(selectedImage);
-        reader.onloadend = async () => {
-            const base64Image = reader.result;
-            console.log('cripto 64', base64Image)
-            const csrfUrl = `session/token?format=json`;
-            const fetchUrl = id ? ` /jsonapi/node/recipe/${id}/field_image` : `/jsonapi/node/recipe/field_image`;
-
-
-            const fetchOptions = {
-                method: id ? 'PATCH' : 'POST',
-                credentials: 'same-origin',
-                headers: new Headers({
-                    'Accept': 'application/vnd.api+json',
-                    'Content-Type': 'application/vnd.api+json',
-                    'Cache': 'no-cache',
-                    'Content-Disposition': `File; filename="${selectedImage.name}"`,
-                }),
-                body: {
-                    "data": {
-                        "type": "file--file",
-                        "filename": `${selectedImage.name}`,
-                        "attributes": {
-                            "uri": {
-                                "value": `public://2024-06/${selectedImage.name}`,
-                                "uri": `/sites/default/files/2024-06/${selectedImage.name}`
-                            },
-                            "filemime": `${base64Image}`,
-                        }
-                    }
-                }
-            };
-            console.log(fetchOptions);
-            
-            const response = await fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions);
-            console.log('respsota', response.json(), response);
-            if (!response.ok) {
-                throw new Error('Failed to upload file');
-            }
-            console.log(response)
-            return response.json();
-
-        }
-    }; */
-
-    const handleImageUpload = (file, base64Image) => {
-        console.log('on handle upload', file, base64Image)
+    const handleImageUpload = (file, buffer) => {
+        console.log('on handle upload', file, buffer)
         setImage(file);
-        setBase64Image(base64Image);
+        setBuffer(buffer);
     };
 
     const handleSubmit = async (event) => {
@@ -151,10 +101,10 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
         };
 
         try {
-            console.log('entrei aquyi')
+            
             const response = await fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions);
             const recipeData = await response.json();
-            console.log('recipe data', recipeData)
+            
 
             if (!response.ok || (recipeData.errors && recipeData.errors.length > 0)) {
                 throw new Error(recipeData.errors ? `${recipeData.errors[0].title}: ${recipeData.errors[0].detail}` : 'Failed to fetch response');
@@ -162,8 +112,8 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
 
             setValues(initialRecipeValues);
 
-            if (image && base64Image) {
-                await uploadImageToRecipe(recipeData.data.id, image, base64Image, csrfUrl);
+            if (image && buffer) {
+                await uploadImageToRecipe(recipeData.data.id, image, buffer, csrfUrl);
             }
 
             setResult({
@@ -192,54 +142,11 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
         } finally {
             setSubmitting(false);
         }
-/*         fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch response');
-                }
-                return response.json();
-            })
-            .then((recipe) => {
-                setSubmitting(false);
 
-                if (recipe.errors && recipe.errors.length > 0) {
-                    setResult({
-                        success: false,
-                        error: true,
-                        message: (
-                            <div className="messages messages--error">
-                                {recipe.errors[0].title}: {recipe.errors[0].detail}
-                            </div>
-                        ),
-                    });
-                    return;
-                }
-
-                setValues(initialRecipeValues);
-
-                if (recipe.data.id) {
-                    setResult({
-                        success: true,
-                        message: (
-                            <div className="messages messages--status">
-                                {(id ? 'Updated' : 'Added')}: <em>{recipe.data.attributes.title}</em>
-                            </div>
-                        ),
-                    });
-
-                    if (typeof onSuccess === 'function') {
-                        onSuccess(recipe.data);
-                    }
-                }
-            })
-            .catch((error) => {
-                console.error('Error while contacting API', error);
-                setSubmitting(false);
-            }); */
     };
 
-    const uploadImageToRecipe = async (recipeId, file, base64Image, csrfUrl) => {
-        console.log('upload image to recipe', recipeId, file, base64Image, csrfUrl)
+    const uploadImageToRecipe = async (recipeId, file, buffer, csrfUrl) => {
+        console.log('upload image to recipe', recipeId, file, buffer, csrfUrl)
         const fetchUrl = `jsonapi/node/recipe/${recipeId}/field_image`;
         const fetchOptions = {
             method: 'POST',
@@ -248,7 +155,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                 'Content-Type': 'application/octet-stream',
                 'Content-Disposition': `file; filename="${file.name}"`,
             }),
-            body: base64Image,
+            body: buffer,
         };
 
         const response = await fetchWithCSRFToken(csrfUrl, fetchUrl, fetchOptions);

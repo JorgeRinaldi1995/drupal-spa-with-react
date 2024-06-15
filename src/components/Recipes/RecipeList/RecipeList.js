@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import RecipeItem from "./RecipeItem";
+import RecipeItem from "../RecipeItem/RecipeItem";
+import './style.scss';
 
 function isValidData(data) {
-  return data !== null && data.data !== undefined && data.data !== null && data.data.length !== 0;
+  return data !== null && data.data !== undefined && data.data.length !== 0;
 }
 
 const NoData = () => (
   <div>No recipes found.</div>
 );
 
-const RecipeListOnly = () => {
+const RecipeList = () => {
   const [recipes, setRecipes] = useState([]);
   const [ingredients, setIngredients] = useState([]);
   const [images, setImages] = useState([]);
@@ -19,7 +20,7 @@ const RecipeListOnly = () => {
     const fetchRecipes = async () => {
       const API_ROOT = '/jsonapi/';
       const url = `${API_ROOT}views/recipes/page_1`;
-      
+
       const headers = new Headers({ Accept: 'application/vnd.api+json' });
 
       try {
@@ -40,15 +41,22 @@ const RecipeListOnly = () => {
     const fetchImages = async () => {
       const API_ROOT = '/jsonapi/';
       const url = `${API_ROOT}/node/recipe?include=field_image`;
-      
+
       const headers = new Headers({ Accept: 'application/vnd.api+json' });
 
       try {
         const response = await fetch(url, { headers });
         const data = await response.json();
-        console.log(data.included)
-        if (isValidData(data)) {
-          setImages(data);
+        
+        if (data.included) {
+          const recipeImageData = data.included.map(item => ({
+            id: item.id,
+            filename: item.attributes.filename,
+            url: item.attributes.uri.url,
+            value: item.attributes.uri.value
+          }));
+          setImages(recipeImageData);
+          console.log('recipe Image Data', recipeImageData)
         }
       } catch (error) {
         console.log('There was an error accessing the API', error);
@@ -78,11 +86,11 @@ const RecipeListOnly = () => {
 
     fetchIngredients();
   }, []);
-
+  console.log('recipes', recipes)
   return (
     <div>
       <h2>Site Recipes</h2>
-      {recipes ? (
+      {recipes.length > 0 ? (
         <>
           <label htmlFor="filter">Type to filter:</label>
           <input
@@ -95,11 +103,9 @@ const RecipeListOnly = () => {
           {recipes
             .filter((item) => {
               if (!filter) {
-                return item;
+                return true;
               }
-              if (filter && item.attributes.title.toLowerCase().includes(filter)) {
-                return item;
-              }
+              return item.attributes.title.toLowerCase().includes(filter);
             })
             .map((item) => (
               <RecipeItem
@@ -108,6 +114,8 @@ const RecipeListOnly = () => {
                 title={item.attributes.title}
                 ingredientsIds={item.relationships.field_ingredients.data.map(ingredient => ingredient.id)}
                 allIngredients={ingredients}
+                recipeImageId={item.relationships.field_image.data.id}
+                imageValues={images}
               />
             ))
           }
@@ -119,4 +127,4 @@ const RecipeListOnly = () => {
   );
 };
 
-export default RecipeListOnly;
+export default RecipeList;

@@ -1,12 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-
-/* Import Components */
-/* import DrupalProjectStats from './components/BaseCrud/DrupalProjectStats';
-import NodeListOnly from "./components/BaseCrud/NodeListOnly";
-import NodeReadWrite from "./components/BaseCrud/NodeReadWrite";
-import RecipeListOnly from './components/Recipes/RecipeListOnly';
-import RecipeForm from './components/Recipes/RecipeForm'; */
 import App from './App'
 
 
