@@ -19,10 +19,11 @@ const useFetchRecipes = (fetchOriginPath) => {
                     const recipeData = {
                         nid: item.attributes.drupal_internal__nid,
                         title: item.attributes.title,
-                        url: item.attributes.body.value,
+                        body: item.attributes.body.value,
                         ingredientsIds: item.relationships.field_ingredients.data.map(ingredient => ingredient.id),
                         recipeImageId: item.relationships.field_image.data.id,
                     };
+                    console.log('recipe values', recipeData.body)
                     setRecipes(recipeData);
                 }
             } catch (error) {

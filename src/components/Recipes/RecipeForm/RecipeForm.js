@@ -3,6 +3,8 @@ import { fetchWithCSRFToken } from "../../../utils/fetch";
 import IngredientSelect from "../IngredientsSelect/IngredientsSelect";
 import SelectedIngredientDisplay from "../SelectedIngredientDisplay/SelectedIngredientDisplay";
 import ImageUploader from "../ImageUploader/ImageUploader";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import './style.scss';
 
 
@@ -28,6 +30,11 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setValues({ ...values, [name]: value });
+    };
+
+    const handleBodyChange = (event, editor) => {
+        const data = editor.getData();
+        setValues({ ...values, body: data });
     };
 
     const handleIngredientAdd = (ingredient) => {
@@ -187,13 +194,14 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                     onChange={handleInputChange}
                 />
                 <br />
-                <textarea
-                    name="body"
-                    rows="4"
-                    cols="30"
-                    value={values.body}
-                    placeholder="Body"
-                    onChange={handleInputChange}
+                <CKEditor
+                    editor={ ClassicEditor }
+                    data={values.body}
+                    onReady={ editor => {
+                        // You can store the "editor" and use when it is needed.
+                        console.log( 'Editor is ready to use!', editor );
+                    } }
+                    onChange={handleBodyChange}
                 />
                 <br />
                 <ImageUploader onImageUpload={handleImageUpload}/>
