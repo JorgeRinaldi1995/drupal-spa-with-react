@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import './style.scss';
+import { Link } from 'react-router-dom';
 
-const RecipeItem = ({ nodeId, title, ingredientsIds, allIngredients, recipeImageId, imageValues }) => {
+const RecipeItem = ({ nid, title, ingredientsIds, allIngredients, recipeImageId, imageValues }) => {
   const [filteredIngredients, setFilteredIngredients] = useState([]);
   const [recipeImage, setRecipeImage] = useState(null);
 
@@ -22,21 +23,21 @@ const RecipeItem = ({ nodeId, title, ingredientsIds, allIngredients, recipeImage
   console.log('recipeImage:', recipeImage, 'imageValues:', imageValues);
 
   return (
-    <a href={`/node/${nodeId}`} className="recipe__item">
+    <Link to={`/recipe/${nid}`} className="recipe__item">
       <article className="recipe__article">
         {recipeImage && (
           <img src={recipeImage.url} alt={recipeImage.filename} className="recipe__img" />
         )}
-        <div class="recipe__data">
+        <div className="recipe__data">
           <h2>{title}</h2>
-          <ul>
+          <ul className="recipe__ingredients">
             {filteredIngredients.map((ingredient, index) => (
-              <li key={index}>{ingredient.name}</li>
+              <li className="recipe__ingredient" key={index}>{ingredient.name}</li>
             ))}
           </ul>
         </div>
       </article>
-    </a>
+    </Link>
   );
 };
 

@@ -10,11 +10,13 @@
     }
     &__img{
         width: 328px;
+        height: 230px;
+        object-fit: cover;
         border-radius: 1.5rem;
      }
      &__data{
         width: 280px;
-        background-color: var(--container-color);
+        background-color: #fff;
         padding: 1.5rem 2rem;
         box-shadow: 0 8px 24px hsla(0, 0%, 0%, .15);
         border-radius: 1rem;
@@ -25,8 +27,25 @@
         margin-inline: auto;
         opacity: 0;
         transition: opacity 1s 1s;
+        text-decoration: none;
+        color: #363636;
     }
-    // Naming animations in hover
+    &__ingredients{
+        display: flex;
+        flex-direction: row;
+        width: 280px;
+        display: flex;
+        justify-content: flex-start;
+        gap: 20px;
+        list-style: none;
+    }
+    &__ingredient{
+        background-color: #eeddff;
+        border: 1px solid #4b3363;
+        color: #4b3363;
+        padding: 6px;
+        border-radius: 9px;
+    }
     &__article:hover &__data {
         animation: show-data 1s forwards;
         opacity: 1;

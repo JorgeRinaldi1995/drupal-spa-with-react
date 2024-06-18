@@ -8,7 +8,6 @@ function ImageUploader({ onImageUpload }) {
 
       reader.onload = (event) => {
         const buffer = event.target.result;
-        console.log('IMAGEM SELECIONADA:', selectedImage,'formato misterioso:', buffer)
         onImageUpload(selectedImage, buffer);
       };
 

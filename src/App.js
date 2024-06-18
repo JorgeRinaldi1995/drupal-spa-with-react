@@ -1,6 +1,7 @@
 import React from 'react';
 import RecipeForm from './components/Recipes/RecipeForm/RecipeForm';
 import RecipeList from './components/Recipes/RecipeList/RecipeList';
+import RecipeDetails from './components/Recipes/RecipeDetails/RecipeDetails';
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 
 function App() {
@@ -9,7 +10,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<RecipeForm />} />
                 <Route path="/recipes" element={<RecipeList />} />
-                <Route path="/recipe/:nid" />
+                <Route path="/recipe/:nid" element={<RecipeDetails />} />
             </Routes>
         </Router>
 

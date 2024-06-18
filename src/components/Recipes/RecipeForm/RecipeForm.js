@@ -46,7 +46,6 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     };
 
     const handleImageUpload = (file, buffer) => {
-        console.log('on handle upload', file, buffer)
         setImage(file);
         setBuffer(buffer);
     };
@@ -79,7 +78,6 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
                             }
                         }))
                     },
-
                 }
             }
         };
