@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import './style.scss';
 import { Link } from 'react-router-dom';
 
-const RecipeItem = ({ nid, title, ingredientsIds, allIngredients, recipeImageId, imageValues }) => {
+const RecipeItem = ({ uuid, nid, title, ingredientsIds, allIngredients, recipeImageId, imageValues }) => {
   const [filteredIngredients, setFilteredIngredients] = useState([]);
   const [recipeImage, setRecipeImage] = useState(null);
 
@@ -20,11 +20,9 @@ const RecipeItem = ({ nid, title, ingredientsIds, allIngredients, recipeImageId,
     }
   }, [recipeImageId, imageValues]);
 
-  console.log('recipeImage:', recipeImage, 'imageValues:', imageValues);
-
   return (
-    <Link to={`/recipe/${nid}`} className="recipe__item">
-      <article className="recipe__article">
+    <Link to={`/recipe/${uuid}`} className="recipe__item">
+      <article className="recipe__article" id={nid}>
         {recipeImage && (
           <img src={recipeImage.url} alt={recipeImage.filename} className="recipe__img" />
         )}

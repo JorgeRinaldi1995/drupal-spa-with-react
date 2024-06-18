@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import RecipeItem from "../RecipeItem/RecipeItem";
-import useFetchRecipes from "../../../utils/useFetchRecipes";
+import useFetchRecipesView from "../../../utils/useFetchRecipesView";
 import useFetchImages from "../../../utils/useFetchImages";
 import useFetchIngredients from "../../../utils/useFetchIngredients";
 import './style.scss';
@@ -13,7 +13,7 @@ const RecipeList = () => {
 
   const [filter, setFilter] = useState(null);
 
-  const recipes = useFetchRecipes('views/recipes/page_1');
+  const recipes = useFetchRecipesView('views/recipes/page_1');
   const images = useFetchImages('/node/recipe?include=field_image');
   const ingredients = useFetchIngredients('taxonomy_term/ingredients');
   
@@ -41,6 +41,7 @@ const RecipeList = () => {
               .map((item) => (
                 <RecipeItem
                   key={item.id}
+                  uuid={item.id}
                   nid={item.attributes.drupal_internal__nid}
                   title={item.attributes.title}
                   ingredientsIds={item.relationships.field_ingredients.data.map(ingredient => ingredient.id)}

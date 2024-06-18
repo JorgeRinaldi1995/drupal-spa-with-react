@@ -82,7 +82,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
             }
         };
 
-        console.log(recipe)
+        
         if (id) {
             recipe.data.id = id;
         }
@@ -144,7 +144,7 @@ const RecipeForm = ({ id, title, body, ingredients, onSuccess }) => {
     };
 
     const uploadImageToRecipe = async (recipeId, file, buffer, csrfUrl) => {
-        console.log('upload image to recipe', recipeId, file, buffer, csrfUrl)
+        
         const fetchUrl = `jsonapi/node/recipe/${recipeId}/field_image`;
         const fetchOptions = {
             method: 'POST',
